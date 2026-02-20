@@ -1,5 +1,6 @@
-class Kategoriler {
+class Kategori {
   int? id;
+  int kayitId;
   int kategoriId;
-  Kategoriler(this.kategoriId);
+  Kategori(this.kategoriId, this.kayitId);
 }

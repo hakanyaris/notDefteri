@@ -9,7 +9,7 @@ class KayitlarSayfasi extends StatefulWidget {
 }
 
 class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
-  List<Kayitlar> _kayitlar = [];
+  List<Kayit> _kayitlar = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,20 +20,25 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   AppBar _buildAppBar() {
-    return AppBar(
-      title: Center(child: Text("Şifre Kaydedici")),
-      actions: [
-        TextButton.icon(
-          onPressed: () {},
-          icon: Icon(Icons.add),
-          label: Text("Kategori ekle"),
-        ),
-      ],
-    );
+    return AppBar(title: Center(child: Text("Şifre Kaydedici")));
   }
 
   Widget _buildBody(BuildContext context) {
-    return _buildListView(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            TextButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.add),
+              label: Text("Kategori ekle"),
+            ),
+          ],
+        ),
+        Expanded(child: _buildListView(context)),
+      ],
+    );
   }
 
   Widget _buildListView(BuildContext context) {
@@ -52,7 +57,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       onPressed: () {
         _kayitEkle(context);
       },
-      child: Row(children: [Icon(Icons.add)]),
+      child: Icon(Icons.add),
     );
   }
 
@@ -80,6 +85,17 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
                 children: [
                   Text("Şifre"),
                   Expanded(child: TextField()),
+                ],
+              ),
+              Row(
+                children: [
+                  TextButton(onPressed: () {}, child: Text("İptal")),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, []);
+                    },
+                    child: Text("Onayla"),
+                  ),
                 ],
               ),
             ],

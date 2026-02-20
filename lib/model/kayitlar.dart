@@ -1,10 +1,9 @@
-class Kayitlar {
+class Kayit {
   int? id;
-  int? kategoriId;
   String kayitAdi;
   DateTime? olusturulmaTarihi;
   String kullaniciAdi;
   String sifre;
 
-  Kayitlar(this.kategoriId, this.kayitAdi, this.kullaniciAdi, this.sifre);
+  Kayit(this.kategoriId, this.kayitAdi, this.kullaniciAdi, this.sifre);
 }
