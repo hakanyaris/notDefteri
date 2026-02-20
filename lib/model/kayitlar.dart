@@ -5,5 +5,15 @@ class Kayit {
   String kullaniciAdi;
   String sifre;
 
-  Kayit(this.kategoriId, this.kayitAdi, this.kullaniciAdi, this.sifre);
+  Kayit(this.kayitAdi, this.kullaniciAdi, this.sifre);
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "kayitAdi": kayitAdi,
+      "olusturulmaTarihi": olusturulmaTarihi,
+      "kullaniciAdi": kullaniciAdi,
+      "sifre": sifre,
+    };
+  }
 }

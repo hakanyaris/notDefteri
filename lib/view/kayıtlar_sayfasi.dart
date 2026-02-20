@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:not_defteri/model/kayitlar.dart';
+import 'package:not_defteri/yerel_veri_tabani.dart';
 
 class KayitlarSayfasi extends StatefulWidget {
   const KayitlarSayfasi({super.key});
@@ -9,6 +10,7 @@ class KayitlarSayfasi extends StatefulWidget {
 }
 
 class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
+  YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
   List<Kayit> _kayitlar = [];
   @override
   Widget build(BuildContext context) {
@@ -61,11 +63,27 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     );
   }
 
-  void _kayitEkle(BuildContext context) {
-    _pencereAc(context);
+  void _kayitEkle(BuildContext context) async {
+    List<dynamic>? _kayitAdiKullaniciAdiSifreList = await _pencereAc(context);
+    if (_kayitAdiKullaniciAdiSifreList != null)
+      _kayitAdiKullaniciAdiSifreList.map((value) {
+        print(value);
+      });
+    if (_kayitAdiKullaniciAdiSifreList != null &&
+        _kayitAdiKullaniciAdiSifreList.length > 2) {
+      String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
+      String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
+      String sifre = _kayitAdiKullaniciAdiSifreList[2];
+      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre);
+      _yerelVeriTabani.createKayit(yeniKayit);
+    }
   }
 
   Future<List<dynamic>?> _pencereAc(BuildContext context) async {
+    TextEditingController controllerKullaniciAdi = TextEditingController();
+    TextEditingController controllerSifre = TextEditingController();
+    TextEditingController controllerKayitAdi = TextEditingController();
+
     return showDialog<List<dynamic>>(
       context: context,
       builder: (context) {
@@ -76,23 +94,41 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
             children: [
               Row(
                 children: [
+                  Text("Kayıt adı;"),
+                  Expanded(child: TextField(controller: controllerKayitAdi)),
+                ],
+              ),
+
+              Row(
+                children: [
                   Text("Kulanıcı Adı;"),
-                  Expanded(child: TextField()),
+                  Expanded(
+                    child: TextField(controller: controllerKullaniciAdi),
+                  ),
                 ],
               ),
 
               Row(
                 children: [
                   Text("Şifre"),
-                  Expanded(child: TextField()),
+                  Expanded(child: TextField(controller: controllerSifre)),
                 ],
               ),
               Row(
                 children: [
-                  TextButton(onPressed: () {}, child: Text("İptal")),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context, []);
+                      Navigator.pop(context);
+                    },
+                    child: Text("İptal"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, [
+                        controllerKayitAdi.text.trim(),
+                        controllerKullaniciAdi.text.trim(),
+                        controllerSifre.text.trim(),
+                      ]);
                     },
                     child: Text("Onayla"),
                   ),

@@ -1,6 +1,6 @@
 class Kategori {
   int? id;
+  String kategoriAdi;
   int kayitId;
-  int kategoriId;
-  Kategori(this.kategoriId, this.kayitId);
+  Kategori(this.kategoriAdi, this.kayitId);
 }
