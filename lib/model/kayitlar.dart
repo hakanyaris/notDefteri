@@ -14,12 +14,14 @@ class Kayit {
       "olusturulmaTarihi": olusturulmaTarihi.millisecondsSinceEpoch,
       "kullaniciAdi": kullaniciAdi,
       "sifre": sifre,
+
+      
     };
   }
   Kayit.fromMap(Map<String,dynamic> map): 
     id=map['id'],
     kayitAdi=map["kayitAdi"],
-    olusturulmaTarihi=DateTime.fromMillisecondsSinceEpoch(map["olusturulmaTarihi"]),
+    olusturulmaTarihi=DateTime.fromMillisecondsSinceEpoch(map["olusturulmaTarihi"] as int),
     kullaniciAdi=map ["kullaniciAdi"],
     sifre=map ["sifre"]
  ; 
