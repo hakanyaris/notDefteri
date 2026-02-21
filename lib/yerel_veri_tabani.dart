@@ -18,7 +18,7 @@ class YerelVeriTabani {
   String _kayitAdiKayitlar = "kayitAdi";
   String _olusturulmaTarihiKayitlar = "olusturulmaTarihi";
   String _kullaniciAdiKayitlar = "kullaniciAdi";
-  String _sifreKayitlar = "kullaniciAdi";
+  String _sifreKayitlar = "sifre";
 
   String _kategorilerTabloAdi = "kategoriler";
   String _idKategoriler = "id";
@@ -43,7 +43,7 @@ class YerelVeriTabani {
     await db.execute(""" 
      CREATE TABLE $_kayitlarTabloAdi(
      $_idKayitlar INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
-     $_kayitAdiKayitlar INTEGER NOT NULL,
+     $_kayitAdiKayitlar TEXT NOT NULL,
      $_olusturulmaTarihiKayitlar  INTEGER,
      $_kullaniciAdiKayitlar TEXT ,
      $_sifreKayitlar TEXT
@@ -62,9 +62,23 @@ CREATE TABLE $_kategorilerTabloAdi (
 
   Future<int?> createKayit(Kayit kayit) async {
     Database? db = await _veriTabaniniGetir();
-    if (db != null)
-      return await db.insert(_kayitlarTabloAdi, kayit.toMap());
+    if (db != null){ return await db.insert(_kayitlarTabloAdi, kayit.toMap());}  
     else
       return -1;
   }
+
+  Future<List<Kayit>> readTumKitap()async {
+    List<Kayit> kayitlar=[];
+  Database? db= await _veriTabaniniGetir();
+  if(db!=null){
+   List<Map<String,dynamic>> mapListesi=await  db.query(_kayitlarTabloAdi);
+
+   for( Map<String,dynamic>item in mapListesi){
+    Kayit k=Kayit.fromMap(item);
+    kayitlar.add(k);
+   }
+  }
+   return kayitlar;
 }
+}
+

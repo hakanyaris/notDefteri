@@ -38,12 +38,12 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
             ),
           ],
         ),
-        Expanded(child: _buildListView(context)),
+        Expanded(child:FutureBuilder(future: _tumListeyiGetir(), builder: _buildListView )   ),
       ],
     );
   }
 
-  Widget _buildListView(BuildContext context) {
+  Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> any) {
     return ListView.builder(
       itemBuilder: _buildListItem,
       itemCount: _kayitlar.length,
@@ -74,10 +74,14 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
       String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
       String sifre = _kayitAdiKullaniciAdiSifreList[2];
-      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre);
+      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now());
       _yerelVeriTabani.createKayit(yeniKayit);
     }
   }
+
+   Future<void> _tumListeyiGetir() async {
+    _kayitlar=await _yerelVeriTabani.readTumKitap();
+   }
 
   Future<List<dynamic>?> _pencereAc(BuildContext context) async {
     TextEditingController controllerKullaniciAdi = TextEditingController();
@@ -140,4 +144,6 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       },
     );
   }
+  
+ 
 }
