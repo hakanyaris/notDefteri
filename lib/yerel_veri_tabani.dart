@@ -62,23 +62,36 @@ CREATE TABLE $_kategorilerTabloAdi (
 
   Future<int?> createKayit(Kayit kayit) async {
     Database? db = await _veriTabaniniGetir();
-    if (db != null){ return await db.insert(_kayitlarTabloAdi, kayit.toMap());}  
-    else
+    print("veritabanına giden map:  ${kayit.toMap()} ");
+    if (db != null) {
+      return await db.insert(_kayitlarTabloAdi, kayit.toMap());
+    } else
       return -1;
   }
 
-  Future<List<Kayit>> readTumKitap()async {
-    List<Kayit> kayitlar=[];
-  Database? db= await _veriTabaniniGetir();
-  if(db!=null){
-   List<Map<String,dynamic>> mapListesi=await  db.query(_kayitlarTabloAdi);
+  Future<List<Kayit>> readTumKayit() async {
+    List<Kayit> kayitlar = [];
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      List<Map<String, dynamic>> mapListesi = await db.query(_kayitlarTabloAdi);
 
-   for( Map<String,dynamic>item in mapListesi){
-    Kayit k=Kayit.fromMap(item);
-    kayitlar.add(k);
-   }
+      for (Map<String, dynamic> item in mapListesi) {
+        Kayit k = Kayit.fromMap(item);
+        kayitlar.add(k);
+      }
+    }
+    return kayitlar;
   }
-   return kayitlar;
-}
-}
 
+  Future<int> updateKayit(Kayit kayit) async {
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      return await db.update(
+        _kayitlarTabloAdi,
+        kayit.toMap(),
+        where: "$_idKayitlar = ?",
+        whereArgs: [kayit.id],
+      );
+    }return 0;
+  }
+}
