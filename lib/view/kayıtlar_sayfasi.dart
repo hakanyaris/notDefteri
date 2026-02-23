@@ -29,14 +29,10 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            TextButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.add),
-              label: Text("Kategori ekle"),
-            ),
-          ],
+        TextButton.icon(
+          onPressed: () {},
+          icon: Icon(Icons.add),
+          label: Text("Kategori ekle"),
         ),
         Expanded(
           child: FutureBuilder(
@@ -59,6 +55,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     return ListTile(
       title: Text(_kayitlar[index].kayitAdi.toString()),
       trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             onPressed: () {
@@ -66,7 +63,12 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
             },
             icon: Icon(Icons.edit_outlined),
           ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+          IconButton(
+            onPressed: () {
+              _kayitSil(index);
+            },
+            icon: Icon(Icons.delete),
+          ),
         ],
       ),
     );
@@ -100,17 +102,43 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     }
   }
 
-  Future<void> _tumListeyiGetir() async {
+  Future<List<Kayit>> _tumListeyiGetir() async {
     _kayitlar = await _yerelVeriTabani.readTumKayit();
+    return _kayitlar;
   }
 
   Future<void> _kayitGuncelle(BuildContext contex, int index) async {
-    List<dynamic>? gundelVeriler = await _pencereAc(
+    Kayit kayit = _kayitlar[index];
+    List<dynamic>? guncelVeriler = await _pencereAc(
       context,
-      mevcutKayitAdi: _kayitlar[index].kayitAdi,
-      mevcutKullaniciAdi: _kayitlar[index].kayitAdi,
-      mevcutSifre: _kayitlar[index].sifre
+      mevcutKayitAdi: kayit.kayitAdi,
+      mevcutKullaniciAdi: kayit.kullaniciAdi,
+      mevcutSifre: kayit.sifre,
     );
+    if (guncelVeriler != null && guncelVeriler.length > 2) {
+      String yeniKayitAdi = guncelVeriler[0];
+      String yeniKullaniciAdi = guncelVeriler[1];
+      String yeniSifre = guncelVeriler[2];
+      if (kayit.kayitAdi != yeniKayitAdi ||
+          kayit.kullaniciAdi != yeniKullaniciAdi ||
+          kayit.sifre != yeniSifre) {
+        kayit.kayitAdi = yeniKayitAdi;
+        kayit.kullaniciAdi = yeniKullaniciAdi;
+        kayit.sifre = yeniSifre;
+        int guncelleneneSatirSayisi = await _yerelVeriTabani.updateKayit(kayit);
+        if (guncelleneneSatirSayisi > 0) {
+          setState(() {});
+        }
+      }
+    }
+  }
+
+  void _kayitSil(int index) async {
+    Kayit kayit = _kayitlar[index];
+    int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
+    if (silinenKayit > 0) {
+      setState(() {});
+    }
   }
 
   Future<List<dynamic>?> _pencereAc(
@@ -119,9 +147,15 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     String mevcutKullaniciAdi = "",
     String mevcutSifre = "",
   }) async {
-    TextEditingController controllerKullaniciAdi = TextEditingController();
-    TextEditingController controllerSifre = TextEditingController();
-    TextEditingController controllerKayitAdi = TextEditingController();
+    TextEditingController controllerKullaniciAdi = TextEditingController(
+      text: mevcutKullaniciAdi,
+    );
+    TextEditingController controllerSifre = TextEditingController(
+      text: mevcutSifre,
+    );
+    TextEditingController controllerKayitAdi = TextEditingController(
+      text: mevcutKayitAdi,
+    );
 
     return showDialog<List<dynamic>>(
       context: context,

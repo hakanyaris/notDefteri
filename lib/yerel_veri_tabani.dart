@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:not_defteri/model/kayitlar.dart';
 import 'package:sqflite/sqflite.dart';
@@ -92,6 +93,19 @@ CREATE TABLE $_kategorilerTabloAdi (
         where: "$_idKayitlar = ?",
         whereArgs: [kayit.id],
       );
-    }return 0;
+    }
+    return 0;
+  }
+
+  Future<int> deleteKayit(Kayit kayit) async {
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      return await db.delete(
+        _kayitlarTabloAdi,
+        where: "$_idKayitlar = ?",
+        whereArgs: [kayit.id],
+      );
+    } else
+      return 0;
   }
 }
