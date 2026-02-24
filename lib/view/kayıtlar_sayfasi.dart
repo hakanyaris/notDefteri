@@ -221,16 +221,25 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   Future<String?> _kategoriPencereAc(BuildContext context) async {
-    TextEditingController _kategoriAdController = TextEditingController();
     return showDialog<String>(
       context: context,
       builder: (context) {
+        String? sonuc;
         return AlertDialog(
           title: Text("Kategori Bilgilerini Giriniz"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [TextField()],
+            children: [
+              TextField(
+                onChanged: (value) {
+                  sonuc = value;
+                },
+              ),
+            ],
+        
+
           ),
+          
         );
       },
     );
