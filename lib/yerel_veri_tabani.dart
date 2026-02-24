@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/model/kayitlar.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -107,5 +108,32 @@ CREATE TABLE $_kategorilerTabloAdi (
       );
     } else
       return 0;
+  }
+
+  //===========KATEGORİ İŞLEMLERİ===================================================================
+
+  Future<int?> createKategori(Kategori kategori) async {
+    Database? db = await _veriTabaniniGetir();
+    print("veritabanına giden map:  ${kategori.toMap()} ");
+    if (db != null) {
+      return await db.insert(_kategorilerTabloAdi, kategori.toMap());
+    } else
+      return -1;
+  }
+
+  Future<List<Kategori>> readTumKategori() async {
+    List<Kategori> kategoriler = [];
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      List<Map<String, dynamic>> mapListesi = await db.query(
+        _kategorilerTabloAdi,
+      );
+
+      for (Map<String, dynamic> item in mapListesi) {
+        Kategori k = Kategori.fromMap(item);
+        kategoriler.add(k);
+      }
+    }
+    return kategoriler;
   }
 }

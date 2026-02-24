@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:not_defteri/model/kayitlar.dart';
+import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/yerel_veri_tabani.dart';
 
-class KayitlarSayfasi extends StatefulWidget {
-  const KayitlarSayfasi({super.key});
+class Kategorisayfasi extends StatefulWidget {
+  const Kategorisayfasi({super.key});
 
   @override
-  State<KayitlarSayfasi> createState() => _KayitlarSayfasiState();
+  State<Kategorisayfasi> createState() => _KategorisayfasiState();
 }
 
-class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
+class _KategorisayfasiState extends State<Kategorisayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
-  List<Kayit> _kayitlar = [];
+  List<Kategori> _kategoriler = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,25 +49,25 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> any) {
     return ListView.builder(
       itemBuilder: _buildListItem,
-      itemCount: _kayitlar.length,
+      itemCount: _kategoriler.length,
     );
   }
 
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
-      title: Text(_kayitlar[index].kayitAdi.toString()),
+      title: Text(_kategoriler[index].kategoriAdi.toString()),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             onPressed: () {
-              _kayitGuncelle(context, index);
+              // _kategoriGuncelle(context, index);
             },
             icon: Icon(Icons.edit_outlined),
           ),
           IconButton(
             onPressed: () {
-              _kayitSil(index);
+              _kategoriSil(index);
             },
             icon: Icon(Icons.delete),
           ),
@@ -86,42 +86,39 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   void _kayitEkle(BuildContext context) async {
-    List<dynamic>? _kayitAdiKullaniciAdiSifreList = await _pencereAc(context);
-    if (_kayitAdiKullaniciAdiSifreList != null)
-      _kayitAdiKullaniciAdiSifreList.map((value) {
-        print(value);
-      });
-    if (_kayitAdiKullaniciAdiSifreList != null &&
-        _kayitAdiKullaniciAdiSifreList.length > 2) {
-      String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
-      String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
-      String sifre = _kayitAdiKullaniciAdiSifreList[2];
-      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now());
-      int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
-      if (kitapId != null) {
-        setState(() {});
-      }
-    }
+    // List<dynamic>? _kayitAdiKullaniciAdiSifreList = await _pencereAc(context);
+    // if (_kayitAdiKullaniciAdiSifreList != null)
+    //   _kayitAdiKullaniciAdiSifreList.map((value) {
+    //     print(value);
+    //   });
+    // if (_kayitAdiKullaniciAdiSifreList != null &&
+    //     _kayitAdiKullaniciAdiSifreList.length > 2) {
+    //   String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
+    //   String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
+    //   String sifre = _kayitAdiKullaniciAdiSifreList[2];
+    //   Kategori yeniKayit = Kategori("");
+    //   int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
+    //   if (kitapId != null) {
+    //     setState(() {});
+    //   }
+    // }
   }
 
-  Future<List<Kayit>> _tumListeyiGetir() async {
-    _kayitlar = await _yerelVeriTabani.readTumKayit();
-    return _kayitlar;
+  Future<List<Kategori>> _tumListeyiGetir() async {
+    _kategoriler = await _yerelVeriTabani.readTumKategori();
+    return _kategoriler;
   }
 
-  Future<void> _kayitGuncelle(BuildContext contex, int index) async {
-    Kayit kayit = _kayitlar[index];
+  Future<void> _kategoriGuncelle(BuildContext contex, int index) async {
+    Kategori kategori = _kategoriler[index];
     List<dynamic>? guncelVeriler = await _pencereAc(
       context,
-      mevcutKayitAdi: kayit.kayitAdi,
-      mevcutKullaniciAdi: kayit.kullaniciAdi,
-      mevcutSifre: kayit.sifre,
+      mevcutKayitAdi: kategori.kategoriAdi,
     );
-    if (guncelVeriler != null && guncelVeriler.length > 2) {
-      String yeniKayitAdi = guncelVeriler[0];
-      String yeniKullaniciAdi = guncelVeriler[1];
-      String yeniSifre = guncelVeriler[2];
-      if (kayit.kayitAdi != yeniKayitAdi ||
+    if (guncelVeriler != null && guncelVeriler.length > 0) {
+      String yeniKategoriAdi = guncelVeriler[0];
+
+      if (kategori.kategoriAdi != yeniKayitAdi ||
           kayit.kullaniciAdi != yeniKullaniciAdi ||
           kayit.sifre != yeniSifre) {
         kayit.kayitAdi = yeniKayitAdi;
@@ -135,12 +132,12 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     }
   }
 
-  void _kayitSil(int index) async {
-    Kayit kayit = _kayitlar[index];
-    int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
-    if (silinenKayit > 0) {
-      setState(() {});
-    }
+  void _kategoriSil(int index) async {
+    // Kayit kayit = _kayitlar[index];
+    // int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
+    // if (silinenKayit > 0) {
+    //   setState(() {});
+    // }
   }
 
   Future<List<dynamic>?> _pencereAc(
@@ -221,15 +218,21 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   Future<String?> _kategoriPencereAc(BuildContext context) async {
-    TextEditingController _kategoriAdController = TextEditingController();
     return showDialog<String>(
       context: context,
       builder: (context) {
+        String? sonuc;
         return AlertDialog(
           title: Text("Kategori Bilgilerini Giriniz"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [TextField()],
+            children: [
+              TextField(
+                onChanged: (value) {
+                  sonuc = value;
+                },
+              ),
+            ],
           ),
         );
       },
