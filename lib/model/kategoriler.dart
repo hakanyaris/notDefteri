@@ -1,15 +1,15 @@
 class Kategori {
   int? id;
   String kategoriAdi;
-  int kayitId;
-  Kategori(this.kategoriAdi, this.kayitId);
+  
+  Kategori(this.kategoriAdi, );
 
   Map<String, dynamic> toMap() {
-    return {"id": id, "kategoriAdi": kategoriAdi, "kayitId": kayitId};
+    return {"id": id, "kategoriAdi": kategoriAdi, };
   }
 
   Kategori.fromMap(Map<String, dynamic> map)
     : id = map["id"],
-      kategoriAdi = map["kategoriAdi"],
-      kayitId = map["kayitAdi"];
+      kategoriAdi = map["kategoriAdi"];
+      
 }

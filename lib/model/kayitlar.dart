@@ -1,11 +1,14 @@
+import 'package:not_defteri/model/kategoriler.dart';
+
 class Kayit {
   int? id;
   String kayitAdi;
   DateTime olusturulmaTarihi;
   String kullaniciAdi;
   String sifre;
+  int kategoriId;
 
-  Kayit(this.kayitAdi, this.kullaniciAdi, this.sifre,this.olusturulmaTarihi);
+  Kayit(this.kayitAdi, this.kullaniciAdi, this.sifre,this.olusturulmaTarihi,this.kategoriId );
 
   Map<String, dynamic> toMap() {
     return {
@@ -14,6 +17,7 @@ class Kayit {
       "olusturulmaTarihi": olusturulmaTarihi.millisecondsSinceEpoch,
       "kullaniciAdi": kullaniciAdi,
       "sifre": sifre,
+      "kategoriId":kategoriId
 
       
     };
@@ -23,6 +27,6 @@ class Kayit {
     kayitAdi=map["kayitAdi"],
     olusturulmaTarihi=DateTime.fromMillisecondsSinceEpoch(map["olusturulmaTarihi"] as int),
     kullaniciAdi=map ["kullaniciAdi"],
-    sifre=map ["sifre"]
- ; 
+    sifre=map ["sifre"],
+    kategoriId=map["kategoriId"] ?? 0 ;
 }

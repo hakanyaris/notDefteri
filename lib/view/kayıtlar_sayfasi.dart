@@ -31,10 +31,10 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       children: [
         TextButton.icon(
           onPressed: () {
-            _kategoriEkle(context);
+            _kategoriSayfasinaGit(context);
           },
           icon: Icon(Icons.add),
-          label: Text("Kategori ekle"),
+          label: Text("Kategori Sayfasına Git"),
         ),
         Expanded(
           child: FutureBuilder(
@@ -96,7 +96,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
       String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
       String sifre = _kayitAdiKullaniciAdiSifreList[2];
-      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now());
+      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now(),0);
       int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
       if (kitapId != null) {
         setState(() {});
@@ -216,8 +216,9 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     );
   }
 
-  void _kategoriEkle(BuildContext context) async {
-    _kategoriPencereAc(context);
+  void _kategoriSayfasinaGit(BuildContext context) async {
+      MaterialPageRoute sayfayolu=MaterialPageRoute(builder: (context){return KayitlarSayfasi();});
+      Navigator.pop(context,sayfayolu);
   }
 
   Future<String?> _kategoriPencereAc(BuildContext context) async {

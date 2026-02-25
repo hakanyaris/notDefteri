@@ -17,7 +17,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(context),
-      floatingActionButton: _buildKayitEkleFab(context),
+      floatingActionButton: _buildKategoriEkleFab(context),
     );
   }
 
@@ -67,7 +67,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
           ),
           IconButton(
             onPressed: () {
-              _kategoriSil(index);
+              // _kategoriSil(index);
             },
             icon: Icon(Icons.delete),
           ),
@@ -76,32 +76,27 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     );
   }
 
-  Widget? _buildKayitEkleFab(BuildContext context) {
+  Widget? _buildKategoriEkleFab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        _kayitEkle(context);
+        _katergoriEkle(context);
       },
       child: Icon(Icons.add),
     );
   }
 
-  void _kayitEkle(BuildContext context) async {
-    // List<dynamic>? _kayitAdiKullaniciAdiSifreList = await _pencereAc(context);
-    // if (_kayitAdiKullaniciAdiSifreList != null)
-    //   _kayitAdiKullaniciAdiSifreList.map((value) {
-    //     print(value);
-    //   });
-    // if (_kayitAdiKullaniciAdiSifreList != null &&
-    //     _kayitAdiKullaniciAdiSifreList.length > 2) {
-    //   String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
-    //   String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
-    //   String sifre = _kayitAdiKullaniciAdiSifreList[2];
-    //   Kategori yeniKayit = Kategori("");
-    //   int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
-    //   if (kitapId != null) {
-    //     setState(() {});
-    //   }
-    // }
+  void _katergoriEkle(BuildContext context) async {
+    String? kategoriAdi = await _pencereAc(context);
+    if (kategoriAdi != null) {
+      // String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
+      // String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
+      // String sifre = _kayitAdiKullaniciAdiSifreList[2];
+      Kategori yeniKategori = Kategori(kategoriAdi);
+      int? kategoiId = await _yerelVeriTabani.createKategori(yeniKategori);
+      if (kategoiId != null) {
+        setState(() {});
+      }
+    }
   }
 
   Future<List<Kategori>> _tumListeyiGetir() async {
@@ -109,28 +104,28 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     return _kategoriler;
   }
 
-  Future<void> _kategoriGuncelle(BuildContext contex, int index) async {
-    Kategori kategori = _kategoriler[index];
-    List<dynamic>? guncelVeriler = await _pencereAc(
-      context,
-      mevcutKayitAdi: kategori.kategoriAdi,
-    );
-    if (guncelVeriler != null && guncelVeriler.length > 0) {
-      String yeniKategoriAdi = guncelVeriler[0];
+  // Future<void> _kategoriGuncelle(BuildContext contex, int index) async {
+  //   Kategori kategori = _kategoriler[index];
+  //   List<dynamic>? guncelVeriler = await _pencereAc(
+  //     context,
+  //     mevcutKayitAdi: kategori.kategoriAdi,
+  //   );
+  //   if (guncelVeriler != null && guncelVeriler.length > 0) {
+  //     String yeniKategoriAdi = guncelVeriler[0];
 
-      if (kategori.kategoriAdi != yeniKayitAdi ||
-          kayit.kullaniciAdi != yeniKullaniciAdi ||
-          kayit.sifre != yeniSifre) {
-        kayit.kayitAdi = yeniKayitAdi;
-        kayit.kullaniciAdi = yeniKullaniciAdi;
-        kayit.sifre = yeniSifre;
-        int guncelleneneSatirSayisi = await _yerelVeriTabani.updateKayit(kayit);
-        if (guncelleneneSatirSayisi > 0) {
-          setState(() {});
-        }
-      }
-    }
-  }
+  //     if (kategori.kategoriAdi != yeniKayitAdi ||
+  //         kayit.kullaniciAdi != yeniKullaniciAdi ||
+  //         kayit.sifre != yeniSifre) {
+  //       kayit.kayitAdi = yeniKayitAdi;
+  //       kayit.kullaniciAdi = yeniKullaniciAdi;
+  //       kayit.sifre = yeniSifre;
+  //       int guncelleneneSatirSayisi = await _yerelVeriTabani.updateKayit(kayit);
+  //       if (guncelleneneSatirSayisi > 0) {
+  //         setState(() {});
+  //       }
+  //     }
+  //   }
+  // }
 
   void _kategoriSil(int index) async {
     // Kayit kayit = _kayitlar[index];
@@ -140,23 +135,17 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     // }
   }
 
-  Future<List<dynamic>?> _pencereAc(
+  Future<String?> _pencereAc(
     BuildContext context, {
-    String mevcutKayitAdi = "",
-    String mevcutKullaniciAdi = "",
-    String mevcutSifre = "",
+    String mevcutKategoriAdi= "",
+ 
   }) async {
-    TextEditingController controllerKullaniciAdi = TextEditingController(
-      text: mevcutKullaniciAdi,
+    TextEditingController controllerKategoriAdi = TextEditingController(
+      text: mevcutKategoriAdi,
     );
-    TextEditingController controllerSifre = TextEditingController(
-      text: mevcutSifre,
-    );
-    TextEditingController controllerKayitAdi = TextEditingController(
-      text: mevcutKayitAdi,
-    );
+   
 
-    return showDialog<List<dynamic>>(
+    return showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -166,26 +155,14 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
             children: [
               Row(
                 children: [
-                  Text("Kayıt adı;"),
-                  Expanded(child: TextField(controller: controllerKayitAdi)),
-                ],
-              ),
-
-              Row(
-                children: [
-                  Text("Kulanıcı Adı;"),
+                  Text("Kategori ;"),
                   Expanded(
-                    child: TextField(controller: controllerKullaniciAdi),
+                    child: TextField(controller: controllerKategoriAdi),
                   ),
                 ],
               ),
 
-              Row(
-                children: [
-                  Text("Şifre"),
-                  Expanded(child: TextField(controller: controllerSifre)),
-                ],
-              ),
+             
               Row(
                 children: [
                   TextButton(
@@ -196,11 +173,9 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context, [
-                        controllerKayitAdi.text.trim(),
-                        controllerKullaniciAdi.text.trim(),
-                        controllerSifre.text.trim(),
-                      ]);
+                      Navigator.pop(context, 
+                        controllerKategoriAdi.text.trim(),
+                      );
                     },
                     child: Text("Onayla"),
                   ),
