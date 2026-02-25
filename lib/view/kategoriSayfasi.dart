@@ -17,7 +17,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(context),
-      floatingActionButton: _buildKategoriEkleFab(context),
+      floatingActionButton: _buildKayitEkleFab(context),
     );
   }
 
@@ -26,27 +26,17 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextButton.icon(
-          onPressed: () {
-            _kategoriEkle(context);
-          },
-          icon: Icon(Icons.add),
-          label: Text("Kategori ekle"),
-        ),
-        Expanded(
-          child: FutureBuilder(
-            future: _tumListeyiGetir(),
-            builder: _buildListView,
-          ),
-        ),
-      ],
-    );
+    return FutureBuilder(future: _tumListeyiGetir(), builder: _buildListView);
   }
 
-  Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> any) {
+  Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> snapShot) {
+    if (snapShot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (_kategoriler.isEmpty) {
+      return Center(child: Text("Henüz kitap eklenmemiş."));
+    }
     return ListView.builder(
       itemBuilder: _buildListItem,
       itemCount: _kategoriler.length,
@@ -76,27 +66,13 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     );
   }
 
-  Widget? _buildKategoriEkleFab(BuildContext context) {
+  Widget? _buildKayitEkleFab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        _katergoriEkle(context);
+        _kategoriEkle(context);
       },
       child: Icon(Icons.add),
     );
-  }
-
-  void _katergoriEkle(BuildContext context) async {
-    String? kategoriAdi = await _pencereAc(context);
-    if (kategoriAdi != null) {
-      // String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
-      // String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
-      // String sifre = _kayitAdiKullaniciAdiSifreList[2];
-      Kategori yeniKategori = Kategori(kategoriAdi);
-      int? kategoiId = await _yerelVeriTabani.createKategori(yeniKategori);
-      if (kategoiId != null) {
-        setState(() {});
-      }
-    }
   }
 
   Future<List<Kategori>> _tumListeyiGetir() async {
@@ -104,9 +80,39 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     return _kategoriler;
   }
 
+  void _kategoriEkle(BuildContext context) async {
+    String? kategoriAdi = await _kategoriPencereAc(context);
+    if (kategoriAdi != null) {
+      Kategori kategori = Kategori(kategoriAdi);
+      int? sonuc = await _yerelVeriTabani.createKategori(kategori);
+      if (sonuc != null && sonuc > 0) {
+        setState(() {});
+      }
+    }
+  }
+
+  // void _kayitEkle(BuildContext context) async {
+    // List<dynamic>? _kayitAdiKullaniciAdiSifreList = await _pencereAc(context);
+    // if (_kayitAdiKullaniciAdiSifreList != null)
+    //   _kayitAdiKullaniciAdiSifreList.map((value) {
+    //     print(value);
+    //   });
+    // if (_kayitAdiKullaniciAdiSifreList != null &&
+    //     _kayitAdiKullaniciAdiSifreList.length > 2) {
+    //   String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
+    //   String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
+    //   String sifre = _kayitAdiKullaniciAdiSifreList[2];
+    //   Kategori yeniKayit = Kategori("");
+    //   int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
+    //   if (kitapId != null) {
+    //     setState(() {});
+    //   }
+    // }
+  }
+
   // Future<void> _kategoriGuncelle(BuildContext contex, int index) async {
   //   Kategori kategori = _kategoriler[index];
-  //   List<dynamic>? guncelVeriler = await _pencereAc(
+  //   List<dynamic>? guncelVeriler = await _kategoriPencereAc(
   //     context,
   //     mevcutKayitAdi: kategori.kategoriAdi,
   //   );
@@ -127,90 +133,48 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   //   }
   // }
 
-  void _kategoriSil(int index) async {
-    // Kayit kayit = _kayitlar[index];
-    // int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
-    // if (silinenKayit > 0) {
-    //   setState(() {});
-    // }
-  }
+  // void _kategoriSil(int index) async {
+  // Kayit kayit = _kayitlar[index];
+  // int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
+  // if (silinenKayit > 0) {
+  //   setState(() {});
+  // }
+}
 
-  Future<String?> _pencereAc(
-    BuildContext context, {
-    String mevcutKategoriAdi= "",
- 
-  }) async {
-    TextEditingController controllerKategoriAdi = TextEditingController(
-      text: mevcutKategoriAdi,
-    );
-   
-
-    return showDialog<String>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Bilgileri Giriniz"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Text("Kategori ;"),
-                  Expanded(
-                    child: TextField(controller: controllerKategoriAdi),
-                  ),
-                ],
-              ),
-
-             
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("İptal"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, 
-                        controllerKategoriAdi.text.trim(),
-                      );
-                    },
-                    child: Text("Onayla"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _kategoriEkle(BuildContext context) async {
-    _kategoriPencereAc(context);
-  }
-
-  Future<String?> _kategoriPencereAc(BuildContext context) async {
-    return showDialog<String>(
-      context: context,
-      builder: (context) {
-        String? sonuc;
-        return AlertDialog(
-          title: Text("Kategori Bilgilerini Giriniz"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) {
-                  sonuc = value;
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+Future<String?> _kategoriPencereAc(BuildContext context) async {
+  return showDialog<String>(
+    context: context,
+    builder: (context) {
+      String? sonuc;
+      return AlertDialog(
+        title: Text("Kategori Bilgilerini Giriniz"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              onChanged: (value) {
+                sonuc = value;
+              },
+            ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("iptal"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, sonuc);
+                  },
+                  child: Text("Onayla"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

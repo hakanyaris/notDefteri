@@ -21,11 +21,11 @@ class YerelVeriTabani {
   String _olusturulmaTarihiKayitlar = "olusturulmaTarihi";
   String _kullaniciAdiKayitlar = "kullaniciAdi";
   String _sifreKayitlar = "sifre";
+  String _kategoriIdKayitlar = "kategoriId";
 
   String _kategorilerTabloAdi = "kategoriler";
   String _idKategoriler = "id";
   String _karegoriAdiKategoriler = "kategoriAdi";
-  String _kayitIdKategoriler = "kategoriId";
 
   Future<Database?> _veriTabaniniGetir() async {
     if (_veritabani == null) {
@@ -48,16 +48,17 @@ class YerelVeriTabani {
      $_kayitAdiKayitlar TEXT NOT NULL,
      $_olusturulmaTarihiKayitlar  INTEGER,
      $_kullaniciAdiKayitlar TEXT ,
-     $_sifreKayitlar TEXT
+     $_sifreKayitlar TEXT,
+     $_kategoriIdKayitlar INTEGER DEFAULT 0,
+      FOREIGN KEY("$_kategoriIdKayitlar") REFERENCES "$_kategorilerTabloAdi" ("$_idKategoriler") ON UPDATE CASCADE ON DELETE CASCADE
      )
     """);
 
     await db.execute("""
 CREATE TABLE $_kategorilerTabloAdi (
 	$_idKategoriler	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
-	$_kayitIdKategoriler	INTEGER NOT NULL,
-  $_karegoriAdiKategoriler TEXT NOT NULL,
-  FOREIGN KEY("$_kayitIdKategoriler") REFERENCES "$_kayitlarTabloAdi" ("$_idKayitlar") ON UPDATE CASCADE ON DELETE CASCADE
+  $_karegoriAdiKategoriler TEXT NOT NULL
+ 
 );
 """);
   }
