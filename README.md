@@ -25,4 +25,4 @@ VS Code üzerinden DevTools'u başlatmanın iki hızlı yolu vardır:
 
 Komut Paleti: Ctrl + Shift + P (Mac'te Cmd + Shift + P) tuşlarına basın ve "Dart: Open DevTools" yazıp Enter'a basın.
 
-=>KATEGORİ SAYFASIN GİT TIKLAYINCA SİYAH EKRAN GELİYOR -YEREL VERİTABANINI SİL
+=>ilk açılışta tüm liste verilerini çekiyor hotrestart yapınca liste siliniyor

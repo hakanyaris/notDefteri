@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/model/kayitlar.dart';
+import 'package:not_defteri/view/kategoriSayfasi.dart';
 import 'package:not_defteri/yerel_veri_tabani.dart';
 
 class KayitlarSayfasi extends StatefulWidget {
@@ -12,6 +14,7 @@ class KayitlarSayfasi extends StatefulWidget {
 class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
   List<Kayit> _kayitlar = [];
+  List<Kategori> _kategoriler = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +41,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
         ),
         Expanded(
           child: FutureBuilder(
-            future: _tumListeyiGetir(),
+            future: _listeleriGetir(),
             builder: _buildListView,
           ),
         ),
@@ -56,6 +59,8 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
       title: Text(_kayitlar[index].kayitAdi.toString()),
+
+      leading: Text(_kategoriAdi(index)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -96,7 +101,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       String kayitAdi = _kayitAdiKullaniciAdiSifreList[0];
       String kullaniciAdi = _kayitAdiKullaniciAdiSifreList[1];
       String sifre = _kayitAdiKullaniciAdiSifreList[2];
-      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now(),0);
+      Kayit yeniKayit = Kayit(kayitAdi, kullaniciAdi, sifre, DateTime.now(), 0);
       int? kitapId = await _yerelVeriTabani.createKayit(yeniKayit);
       if (kitapId != null) {
         setState(() {});
@@ -104,9 +109,16 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     }
   }
 
-  Future<List<Kayit>> _tumListeyiGetir() async {
-    _kayitlar = await _yerelVeriTabani.readTumKayit();
-    return _kayitlar;
+  Future<void> _listeleriGetir() async {
+    Future<List<Kayit>> _tumListeyiGetir() async {
+      _kayitlar = await _yerelVeriTabani.readTumKayit();
+      return _kayitlar;
+    }
+
+    Future<List<Kategori>> _tumKategoriListesiniGetir() async {
+      _kategoriler = await _yerelVeriTabani.readTumKategori();
+      return _kategoriler;
+    }
   }
 
   Future<void> _kayitGuncelle(BuildContext contex, int index) async {
@@ -217,8 +229,12 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   void _kategoriSayfasinaGit(BuildContext context) async {
-      MaterialPageRoute sayfayolu=MaterialPageRoute(builder: (context){return KayitlarSayfasi();});
-      Navigator.pop(context,sayfayolu);
+    MaterialPageRoute sayfayolu = MaterialPageRoute(
+      builder: (context) {
+        return Kategorisayfasi();
+      },
+    );
+    Navigator.push(context, sayfayolu);
   }
 
   Future<String?> _kategoriPencereAc(BuildContext context) async {
@@ -237,12 +253,14 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
                 },
               ),
             ],
-        
-
           ),
-          
         );
       },
     );
+  }
+
+  String _kategoriAdi(int index) {
+    int kategoriId = _kayitlar[index].kategoriId.toInt();
+    return _kategoriler.firstWhere((value) => value == kategoriId).kategoriAdi;
   }
 }

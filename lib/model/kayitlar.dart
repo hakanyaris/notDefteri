@@ -1,6 +1,13 @@
 import 'package:not_defteri/model/kategoriler.dart';
 
 class Kayit {
+  int? id;
+  int kategoriId;
+  String kayitAdi;
+  String kullaniciAdi;
+  DateTime olusturulmaTarihi;
+  String sifre;
+
   Kayit(
     this.kayitAdi,
     this.kullaniciAdi,
@@ -18,13 +25,6 @@ class Kayit {
       kullaniciAdi = map["kullaniciAdi"],
       sifre = map["sifre"],
       kategoriId = map["kategoriId"] ?? 0;
-
-  int? id;
-  int kategoriId;
-  String kayitAdi;
-  String kullaniciAdi;
-  DateTime olusturulmaTarihi;
-  String sifre;
 
   Map<String, dynamic> toMap() {
     return {
