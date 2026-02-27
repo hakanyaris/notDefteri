@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/model/kayitlar.dart';
 import 'package:not_defteri/view/kategoriSayfasi.dart';
+
 import 'package:not_defteri/yerel_veri_tabani.dart';
 
 class KayitlarSayfasi extends StatefulWidget {
@@ -110,15 +111,15 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   Future<void> _listeleriGetir() async {
-    Future<List<Kayit>> _tumListeyiGetir() async {
-      _kayitlar = await _yerelVeriTabani.readTumKayit();
-      return _kayitlar;
-    }
-
-    Future<List<Kategori>> _tumKategoriListesiniGetir() async {
-      _kategoriler = await _yerelVeriTabani.readTumKategori();
-      return _kategoriler;
-    }
+    // Future.wait her iki sorguyu aynı anda başlatır ve bitmelerini bekler.
+    await Future.wait([
+      _yerelVeriTabani.readTumKayit().then((gelenKayitlar) {
+        _kayitlar = gelenKayitlar;
+      }),
+      _yerelVeriTabani.readTumKategori().then((gelenKategoriler) {
+        _kategoriler = gelenKategoriler;
+      }),
+    ]);
   }
 
   Future<void> _kayitGuncelle(BuildContext contex, int index) async {
@@ -260,7 +261,10 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   String _kategoriAdi(int index) {
-    int kategoriId = _kayitlar[index].kategoriId.toInt();
-    return _kategoriler.firstWhere((value) => value == kategoriId).kategoriAdi;
+    if (_kategoriler.isEmpty) return "Genel";
+    int kategoriId = _kayitlar[index].kategoriId.toInt() + 1;
+    return _kategoriler
+        .firstWhere((value) => value.id == kategoriId)
+        .kategoriAdi;
   }
 }

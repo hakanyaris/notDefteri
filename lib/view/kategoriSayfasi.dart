@@ -12,13 +12,8 @@ class Kategorisayfasi extends StatefulWidget {
 class _KategorisayfasiState extends State<Kategorisayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
   List<Kategori> _kategoriler = [];
-  late Future<List<Kategori>> _kategorilerFuture;
-  @override
-  void initState() {
-    super.initState();
-    _kategorilerFuture = _tumListeyiGetir(); // ✅ ekle
-  }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,22 +24,14 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   }
 
   AppBar _buildAppBar() {
-    return AppBar(title: Center(child: Text("Şifre Kaydedici")));
+    return AppBar(title: Center(child: Text("Kategoriler")));
   }
 
   Widget _buildBody(BuildContext context) {
-    return FutureBuilder(future: _kategorilerFuture, builder: _buildListView);
+    return FutureBuilder(future: _tumListeyiGetir(), builder: _buildListView);
   }
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> snapShot) {
-    // ✅ hata kontrolü ekle
-    if (snapShot.hasError) {
-      return Center(child: Text("Hata: ${snapShot.error}"));
-    }
-
-    if (_kategoriler.isEmpty) {
-      return Center(child: Text("Henüz kategori eklenmemiş."));
-    }
     return ListView.builder(
       itemBuilder: _buildListItem,
       itemCount: _kategoriler.length,
@@ -94,9 +81,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
       Kategori kategori = Kategori(kategoriAdi);
       int? sonuc = await _yerelVeriTabani.createKategori(kategori);
       if (sonuc != null && sonuc > 0) {
-        setState(() {
-          _kategorilerFuture = _tumListeyiGetir();
-        });
+        setState(() {});
       }
     }
   }
