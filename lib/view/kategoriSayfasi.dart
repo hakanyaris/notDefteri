@@ -41,6 +41,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
       title: Text(_kategoriler[index].kategoriAdi.toString()),
+      leading: Text(_kategoriler[index].id.toString()),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -261,10 +261,20 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   String _kategoriAdi(int index) {
-    if (_kategoriler.isEmpty) return "Genel";
-    int kategoriId = _kayitlar[index].kategoriId.toInt() + 1;
-    return _kategoriler
-        .firstWhere((value) => value.id == kategoriId)
-        .kategoriAdi;
+    int kategoriId = 0;
+
+    print(_kategoriler);
+    int a = _kayitlar[index].kategoriId.toInt();
+    print(a);
+    // if (_kategoriler.isEmpty) return "Genel";
+    // // if( _kayitlar[index].kategoriId.toInt() + 1  ){ kategoriId=0};
+    // try {
+    //   kategoriId = _kayitlar[index].kategoriId.toInt() + 1;
+    //   print(kategoriId);
+    //   return _kategoriler
+    //       .firstWhere((value) => value.id == kategoriId)
+    //       .kategoriAdi;
+    // } catch (e) {}
+    return "Genel";
   }
 }
