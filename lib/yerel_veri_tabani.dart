@@ -49,7 +49,7 @@ class YerelVeriTabani {
      $_olusturulmaTarihiKayitlar  INTEGER,
      $_kullaniciAdiKayitlar TEXT ,
      $_sifreKayitlar TEXT,
-     $_kategoriIdKayitlar INTEGER DEFAULT 0,
+     $_kategoriIdKayitlar INTEGER DEFAULT 3,
       FOREIGN KEY("$_kategoriIdKayitlar") REFERENCES "$_kategorilerTabloAdi" ("$_idKategoriler") ON UPDATE CASCADE ON DELETE CASCADE
      )
     """);
@@ -136,5 +136,18 @@ CREATE TABLE $_kategorilerTabloAdi (
       }
     }
     return kategoriler;
+  }
+
+  Future<int> updateKategori(Kategori kategori) async {
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      return await db.update(
+        _kategorilerTabloAdi,
+        kategori.toMap(),
+        where: "$_idKategoriler",
+        whereArgs: [kategori.id],
+      );
+    }
+    return 0;
   }
 }
