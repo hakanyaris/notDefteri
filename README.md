@@ -26,3 +26,14 @@ VS Code üzerinden DevTools'u başlatmanın iki hızlı yolu vardır:
 Komut Paleti: Ctrl + Shift + P (Mac'te Cmd + Shift + P) tuşlarına basın ve "Dart: Open DevTools" yazıp Enter'a basın.
 
 => String _kategoriAdi(int index) DÜZENLENDİ , kategoriler ana listede görüntülendi,kategori ekle ve kategori sil yaz, ana ekranda kategori seçme dropdown koy 
+
+1. Güncel Verileri Çek
+Öncelikle sunucudaki en son değişiklikleri bilgisayarına "indir" ama henüz birleştirme (merge) yapma:
+
+Bash
+git fetch --all
+2. Üzerine Yazma İşlemini Başlat
+Şu anki dalını (branch), sunucudaki dalın kopyası olacak şekilde sıfırla. Eğer ana dalda çalışıyorsan (genelde main veya master olur):
+
+Bash
+git reset --hard origin/master

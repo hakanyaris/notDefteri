@@ -272,7 +272,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     int? kategoriId;
 
     print(_kategoriler);
-    int a = _kayitlar[index].kategoriId.toInt();
+    int a = _kayitlar[index].kategoriId.toInt();//index =0 ,kategoriId=3
     print(a);
     if (_kategoriler.isEmpty) return "Genel";
     try {

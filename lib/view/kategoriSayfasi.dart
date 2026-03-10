@@ -91,12 +91,13 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     print(" kategori GÜncelle index $index ");
     Kategori kategori = _kategoriler[index];
     print("${kategori.kategoriAdi}");
-    String? kategoriAd = await _kategoriPencereAc(
+    String? yenikategoriAd = await _kategoriPencereAc(
       context,
       mevcutKategoriAdi: _kategoriler[index].kategoriAdi,
     );
-    print("yeni kategoriAdi $kategoriAd");
-    if (kategoriAd != null) {
+    print("yeni kategoriAdi $yenikategoriAd");
+    if (yenikategoriAd != null) {
+      kategori.kategoriAdi=yenikategoriAd;
       int guncellenenSatirSayisi = await _yerelVeriTabani.updateKategori(
         kategori,
       );
@@ -106,7 +107,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   }
 
   void _kategoriSil(int index) async {
-    Kategori kategori = _kategoriler[index];
+    Kategori kategori = _kategoriler[index];  
     int silinenSatir = await _yerelVeriTabani.deleteKategori(kategori);
     if (silinenSatir > 0) {
       setState(() {});
@@ -115,7 +116,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
 
   Future<String?> _kategoriPencereAc(
     BuildContext context, {
-    String mevcutKategoriAdi = "",
+    String mevcutKategoriAdi = " ",
   }) async {
     TextEditingController _kategoriAdiControler = TextEditingController(
       text: mevcutKategoriAdi,
@@ -130,6 +131,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                controller:_kategoriAdiControler ,
                 onChanged: (value) {
                   sonuc = value;
                 },
