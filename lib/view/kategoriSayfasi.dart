@@ -47,13 +47,13 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
         children: [
           IconButton(
             onPressed: () {
-              // _kategoriGuncelle(context, index);
+              _kategoriGuncelle(context, index);
             },
             icon: Icon(Icons.edit_outlined),
           ),
           IconButton(
             onPressed: () {
-              // _kategoriSil(index);
+              _kategoriSil(index);
             },
             icon: Icon(Icons.delete),
           ),
@@ -87,7 +87,39 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     }
   }
 
-  Future<String?> _kategoriPencereAc(BuildContext context) async {
+  void _kategoriGuncelle(BuildContext context, int index) async {
+    print(" kategori GÜncelle index $index ");
+    Kategori kategori = _kategoriler[index];
+    print("${kategori.kategoriAdi}");
+    String? kategoriAd = await _kategoriPencereAc(
+      context,
+      mevcutKategoriAdi: _kategoriler[index].kategoriAdi,
+    );
+    print("yeni kategoriAdi $kategoriAd");
+    if (kategoriAd != null) {
+      int guncellenenSatirSayisi = await _yerelVeriTabani.updateKategori(
+        kategori,
+      );
+      print("güncellenenSatir sayisi KategoriAdi:$guncellenenSatirSayisi");
+      if (guncellenenSatirSayisi > 0) setState(() {});
+    }
+  }
+
+  void _kategoriSil(int index) async {
+    Kategori kategori = _kategoriler[index];
+    int silinenSatir = await _yerelVeriTabani.deleteKategori(kategori);
+    if (silinenSatir > 0) {
+      setState(() {});
+    }
+  }
+
+  Future<String?> _kategoriPencereAc(
+    BuildContext context, {
+    String mevcutKategoriAdi = "",
+  }) async {
+    TextEditingController _kategoriAdiControler = TextEditingController(
+      text: mevcutKategoriAdi,
+    );
     return showDialog<String>(
       context: context,
       builder: (context) {

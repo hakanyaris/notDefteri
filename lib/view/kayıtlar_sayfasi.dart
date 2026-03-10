@@ -141,7 +141,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       mevcutSifre: kayit.sifre,
       mevcutKategoriId: kayit.kategoriId,
     );
-    if (guncelVeriler != null && guncelVeriler.length > 2) {
+    if (guncelVeriler != null && guncelVeriler.length > 3) {
       String yeniKayitAdi = guncelVeriler[0];
       String yeniKullaniciAdi = guncelVeriler[1];
       String yeniSifre = guncelVeriler[2];
@@ -177,6 +177,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     String mevcutSifre = "",
     int mevcutKategoriId = 3,
   }) async {
+    print("mevcutKategoriId $mevcutKategoriId");
     TextEditingController controllerKullaniciAdi = TextEditingController(
       text: mevcutKullaniciAdi,
     );

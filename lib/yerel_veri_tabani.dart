@@ -144,10 +144,22 @@ CREATE TABLE $_kategorilerTabloAdi (
       return await db.update(
         _kategorilerTabloAdi,
         kategori.toMap(),
-        where: "$_idKategoriler",
+        where: "$_idKategoriler = ?",
         whereArgs: [kategori.id],
       );
     }
     return 0;
+  }
+
+  Future<int> deleteKategori(Kategori kategori) async {
+    Database? db = await _veriTabaniniGetir();
+    if (db != null) {
+      return await db.delete(
+        _kategorilerTabloAdi,
+        where: "$_idKategoriler = ?",
+        whereArgs: [kategori.id],
+      );
+    } else
+      return 0;
   }
 }
