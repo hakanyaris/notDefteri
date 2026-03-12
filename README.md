@@ -37,3 +37,13 @@ git fetch --all
 
 Bash
 git reset --hard origin/master
+
+Bash
+flutter pub run build_runner build --delete-conflicting-outputs
+Bu komut, eski ve hatalı oluşturulmuş dosyaları siler ve her şeyi sıfırdan temiz bir şekilde bağlar.
+
+
+Terminali açın ve şu komutu çalıştırın. Bu komut, paketi projenizin "geliştirme bağımlılıkları" (dev_dependencies) kısmına ekleyecektir:
+
+Bash
+dart run build_runner build

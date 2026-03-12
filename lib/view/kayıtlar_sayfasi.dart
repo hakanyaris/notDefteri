@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/model/kayitlar.dart';
 import 'package:not_defteri/view/kategoriSayfasi.dart';
+import 'package:not_defteri/view/kayitDetay.dart';
 
 import 'package:not_defteri/yerel_veri_tabani.dart';
 
@@ -79,6 +80,9 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
           ),
         ],
       ),
+      onTap: () {
+        _kayitDetaySayfasinaGit(_kayitlar[index]);
+      },
     );
   }
 
@@ -175,7 +179,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     String mevcutKayitAdi = "",
     String mevcutKullaniciAdi = "",
     String mevcutSifre = "",
-    int mevcutKategoriId = 3,
+    int mevcutKategoriId = 1,
   }) async {
     print("mevcutKategoriId $mevcutKategoriId");
     TextEditingController controllerKullaniciAdi = TextEditingController(
@@ -265,14 +269,19 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
         return Kategorisayfasi();
       },
     );
-    Navigator.push(context, sayfayolu);
+    Navigator.push(context, sayfayolu).then((gelenVeri) {
+      if (gelenVeri > 0) {
+        setState(() {});
+      }
+      ;
+    });
   }
 
   String _kategoriAdi(int index) {
     int? kategoriId;
 
     print(_kategoriler);
-    int a = _kayitlar[index].kategoriId.toInt();//index =0 ,kategoriId=3
+    int a = _kayitlar[index].kategoriId.toInt(); //index =0 ,kategoriId=3
     print(a);
     if (_kategoriler.isEmpty) return "Genel";
     try {
@@ -285,5 +294,14 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       print("hata");
     }
     return "Genel";
+  }
+
+  void _kayitDetaySayfasinaGit(Kayit kayit) {
+    MaterialPageRoute sayfaYolu = MaterialPageRoute(
+      builder: (context) {
+        return KayitDetay(kayit);
+      },
+    );
+    Navigator.push(context, sayfaYolu);
   }
 }

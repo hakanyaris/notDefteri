@@ -12,14 +12,22 @@ class Kategorisayfasi extends StatefulWidget {
 class _KategorisayfasiState extends State<Kategorisayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
   List<Kategori> _kategoriler = [];
+  int guncellenenSatirSayisi = 0;
 
   @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(context),
-      floatingActionButton: _buildKayitEkleFab(context),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        Navigator.pop(context, guncellenenSatirSayisi);
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        body: _buildBody(context),
+        floatingActionButton: _buildKayitEkleFab(context),
+      ),
     );
   }
 
@@ -97,17 +105,15 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
     );
     print("yeni kategoriAdi $yenikategoriAd");
     if (yenikategoriAd != null) {
-      kategori.kategoriAdi=yenikategoriAd;
-      int guncellenenSatirSayisi = await _yerelVeriTabani.updateKategori(
-        kategori,
-      );
+      kategori.kategoriAdi = yenikategoriAd;
+      guncellenenSatirSayisi = await _yerelVeriTabani.updateKategori(kategori);
       print("güncellenenSatir sayisi KategoriAdi:$guncellenenSatirSayisi");
       if (guncellenenSatirSayisi > 0) setState(() {});
     }
   }
 
   void _kategoriSil(int index) async {
-    Kategori kategori = _kategoriler[index];  
+    Kategori kategori = _kategoriler[index];
     int silinenSatir = await _yerelVeriTabani.deleteKategori(kategori);
     if (silinenSatir > 0) {
       setState(() {});
@@ -131,7 +137,7 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller:_kategoriAdiControler ,
+                controller: _kategoriAdiControler,
                 onChanged: (value) {
                   sonuc = value;
                 },
