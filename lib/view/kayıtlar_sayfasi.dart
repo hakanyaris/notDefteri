@@ -17,6 +17,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   YerelVeriTabani _yerelVeriTabani = YerelVeriTabani();
   List<Kayit> _kayitlar = [];
   List<Kategori> _kategoriler = [];
+  int? secilenKategori;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,22 +42,66 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
           icon: Icon(Icons.add),
           label: Text("Kategori Sayfasına Git"),
         ),
+
         Expanded(
           child: FutureBuilder(
             future: _listeleriGetir(),
-            builder: _buildListView,
+            builder: _buildColumn,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> any) {
-    return ListView.builder(
-      itemBuilder: _buildListItem,
-      itemCount: _kayitlar.length,
+  Widget _buildColumn(BuildContext context, AsyncSnapshot<dynamic> any) {
+    //   if (snapshot.connectionState == ConnectionState.waiting) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
+    final filtrelenmisListe = secilenKategori != null
+        ? _kayitlar
+        : _kayitlar.where((element) {
+            return element.kategoriId == secilenKategori;
+          }).toList();
+    return Column(
+      children: [
+        if (_kategoriler.isNotEmpty)
+          DropdownButton(
+            hint: Text("Kategori Seçiniz"),
+            items: _kategoriler.map((Kategori element) {
+              return DropdownMenuItem(
+                value: element.id,
+                child: Text(element.kategoriAdi),
+              );
+            }).toList(),
+            onChanged: (value) {
+              secilenKategori = value;
+              setState(() {
+                
+              });
+              print(value);
+            },
+          )
+        else
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("Kategori bulunamadı"),
+          ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: _buildListItem,
+            itemCount: filtrelenmisListe.length,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildListView(BuildContext context, AsyncSnapshot<dynamic> any) {
+  //   return ListView.builder(
+  //     itemBuilder: _buildListItem,
+  //     itemCount: _kayitlar.length,
+  //   );
+  // }
 
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
@@ -124,7 +169,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     }
   }
 
-  Future<void> _listeleriGetir() async {
+  Future<bool> _listeleriGetir() async {
     // Future.wait her iki sorguyu aynı anda başlatır ve bitmelerini bekler.
     await Future.wait([
       _yerelVeriTabani.readTumKayit().then((gelenKayitlar) {
@@ -134,6 +179,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
         _kategoriler = gelenKategoriler;
       }),
     ]);
+    return true;
   }
 
   Future<void> _kayitGuncelle(BuildContext contex, int index) async {
