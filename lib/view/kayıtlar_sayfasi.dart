@@ -18,6 +18,8 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   List<Kayit> _kayitlar = [];
   List<Kategori> _kategoriler = [];
   int? secilenKategori;
+  List<Kayit>? filtrelenmisKayitListesi;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,11 +59,16 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     //   if (snapshot.connectionState == ConnectionState.waiting) {
     //   return const Center(child: CircularProgressIndicator());
     // }
-    final filtrelenmisListe = secilenKategori != null
+    filtrelenmisKayitListesi = secilenKategori == null
         ? _kayitlar
         : _kayitlar.where((element) {
-            return element.kategoriId == secilenKategori;
+            print("filtrelenmisKayitListesi ıd ${element.kategoriId}");
+            print("secilenKategori=$secilenKategori");
+            return secilenKategori == element.kategoriId;
           }).toList();
+    for (Kayit element in filtrelenmisKayitListesi!) {
+      print("filtrelenmisKayitListesi: ${element.kayitAdi}");
+    }
     return Column(
       children: [
         if (_kategoriler.isNotEmpty)
@@ -75,10 +82,8 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
             }).toList(),
             onChanged: (value) {
               secilenKategori = value;
-              setState(() {
-                
-              });
-              print(value);
+              setState(() {});
+              // print(value);
             },
           )
         else
@@ -89,7 +94,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
         Expanded(
           child: ListView.builder(
             itemBuilder: _buildListItem,
-            itemCount: filtrelenmisListe.length,
+            itemCount: filtrelenmisKayitListesi!.length,
           ),
         ),
       ],
@@ -105,7 +110,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
 
   Widget _buildListItem(BuildContext context, int index) {
     return ListTile(
-      title: Text(_kayitlar[index].kayitAdi.toString()),
+      title: Text(filtrelenmisKayitListesi![index].kayitAdi.toString()),
 
       leading: Text(_kategoriAdi(index)),
       trailing: Row(
@@ -146,7 +151,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     );
     if (_kayitAdiKullaniciAdiSifreListKategoriId != null)
       _kayitAdiKullaniciAdiSifreListKategoriId.map((value) {
-        print(value);
+        // print(value);
       });
     if (_kayitAdiKullaniciAdiSifreListKategoriId != null &&
         _kayitAdiKullaniciAdiSifreListKategoriId.length > 2) {
@@ -227,7 +232,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     String mevcutSifre = "",
     int mevcutKategoriId = 1,
   }) async {
-    print("mevcutKategoriId $mevcutKategoriId");
+    // print("mevcutKategoriId $mevcutKategoriId");
     TextEditingController controllerKullaniciAdi = TextEditingController(
       text: mevcutKullaniciAdi,
     );
@@ -325,16 +330,19 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
 
   String _kategoriAdi(int index) {
     int? kategoriId;
+    print("İNDEX $index ");
 
-    print(_kategoriler);
-    int a = _kayitlar[index].kategoriId.toInt(); //index =0 ,kategoriId=3
-    print(a);
-    if (_kategoriler.isEmpty) return "Genel";
+    // print(_kategoriler);
+    int kategoriId2 = filtrelenmisKayitListesi![index].kategoriId
+        .toInt(); //index =0 ,kategoriId=3
+    print("kategori ıd:$kategoriId2");
+    // if (filtrelenmisKayitListesi!.isEmpty) return "Genel";
     try {
-      kategoriId = _kayitlar[index].kategoriId.toInt();
-      print(kategoriId);
-      return _kategoriler
-          .firstWhere((value) => value.id == kategoriId)
+      print("try girdi");
+      kategoriId = kategoriId2;
+      // print(kategoriId);
+      return filtrelenmisKayitListesi!
+          .firstWhere((Kayit value) => value.id == kategoriId)
           .kategoriAdi;
     } catch (e) {
       print("hata");

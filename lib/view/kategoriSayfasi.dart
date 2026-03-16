@@ -96,18 +96,18 @@ class _KategorisayfasiState extends State<Kategorisayfasi> {
   }
 
   void _kategoriGuncelle(BuildContext context, int index) async {
-    print(" kategori GÜncelle index $index ");
+    // print(" kategori GÜncelle index $index ");
     Kategori kategori = _kategoriler[index];
-    print("${kategori.kategoriAdi}");
+    // print("${kategori.kategoriAdi}");
     String? yenikategoriAd = await _kategoriPencereAc(
       context,
       mevcutKategoriAdi: _kategoriler[index].kategoriAdi,
     );
-    print("yeni kategoriAdi $yenikategoriAd");
+    // print("yeni kategoriAdi $yenikategoriAd");
     if (yenikategoriAd != null) {
       kategori.kategoriAdi = yenikategoriAd;
       guncellenenSatirSayisi = await _yerelVeriTabani.updateKategori(kategori);
-      print("güncellenenSatir sayisi KategoriAdi:$guncellenenSatirSayisi");
+      // print("güncellenenSatir sayisi KategoriAdi:$guncellenenSatirSayisi");
       if (guncellenenSatirSayisi > 0) setState(() {});
     }
   }
