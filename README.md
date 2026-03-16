@@ -47,3 +47,5 @@ Terminali açın ve şu komutu çalıştırın. Bu komut, paketi projenizin "gel
 
 Bash
 dart run build_runner build
+
+ANA LİSTEDE DROP DOWN İLE GÜNCELLEME KATEGORİYE GÖRE GÜNCELLEME YAPARKEN HATA YAPTIM YAZAR dersini izleyip geri döneceğim (_kategoriAdi fonsiyonu içindeki _kayitlar listesini filtrelenmisKayitListesi listesi ile değiştirdim hatırlatma)
