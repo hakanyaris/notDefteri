@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:not_defteri/model/kategoriler.dart';
 import 'package:not_defteri/model/kayitlar.dart';
 import 'package:not_defteri/view/kategoriSayfasi.dart';
@@ -73,6 +74,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       children: [
         if (_kategoriler.isNotEmpty)
           DropdownButton(
+            value: secilenKategori,
             hint: Text("Kategori Seçiniz"),
             items: _kategoriler.map((Kategori element) {
               return DropdownMenuItem(
@@ -131,7 +133,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
         ],
       ),
       onTap: () {
-        _kayitDetaySayfasinaGit(_kayitlar[index]);
+        _kayitDetaySayfasinaGit(filtrelenmisKayitListesi![index]);
       },
     );
   }
@@ -188,7 +190,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   Future<void> _kayitGuncelle(BuildContext contex, int index) async {
-    Kayit kayit = _kayitlar[index];
+    Kayit kayit = filtrelenmisKayitListesi![index];
     List<dynamic>? guncelVeriler = await _pencereAc(
       context,
       mevcutKayitAdi: kayit.kayitAdi,
@@ -218,7 +220,7 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
   }
 
   void _kayitSil(int index) async {
-    Kayit kayit = _kayitlar[index];
+    Kayit kayit = filtrelenmisKayitListesi![index];
     int silinenKayit = await _yerelVeriTabani.deleteKayit(kayit);
     if (silinenKayit > 0) {
       setState(() {});
@@ -246,69 +248,75 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
     return showDialog<List<dynamic>>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Bilgileri Giriniz"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
+        return StatefulBuilder(
+          builder: (context, setStateInDialog) {
+            return AlertDialog(
+              title: Text("Bilgileri Giriniz"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Kayıt adı;"),
-                  Expanded(child: TextField(controller: controllerKayitAdi)),
-                ],
-              ),
-
-              Row(
-                children: [
-                  Text("Kulanıcı Adı;"),
-                  Expanded(
-                    child: TextField(controller: controllerKullaniciAdi),
+                  Row(
+                    children: [
+                      Text("Kayıt adı;"),
+                      Expanded(
+                        child: TextField(controller: controllerKayitAdi),
+                      ),
+                    ],
                   ),
-                ],
-              ),
 
-              Row(
-                children: [
-                  Text("Şifre"),
-                  Expanded(child: TextField(controller: controllerSifre)),
-                ],
-              ),
-              DropdownButton<int>(
-                value: mevcutKategoriId,
-                items: _kategoriler.map((Kategori a) {
-                  return DropdownMenuItem<int>(
-                    child: Text(a.kategoriAdi),
-                    value: a.id,
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  mevcutKategoriId = value ?? 0;
-                },
-              ),
+                  Row(
+                    children: [
+                      Text("Kulanıcı Adı;"),
+                      Expanded(
+                        child: TextField(controller: controllerKullaniciAdi),
+                      ),
+                    ],
+                  ),
 
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                  Row(
+                    children: [
+                      Text("Şifre"),
+                      Expanded(child: TextField(controller: controllerSifre)),
+                    ],
+                  ),
+                  DropdownButton<int>(
+                    value: mevcutKategoriId,
+                    items: _kategoriler.map((Kategori a) {
+                      return DropdownMenuItem<int>(
+                        child: Text(a.kategoriAdi),
+                        value: a.id,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      mevcutKategoriId = value ?? 0;
                     },
-                    child: Text("İptal"),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, [
-                        controllerKayitAdi.text.trim(),
-                        controllerKullaniciAdi.text.trim(),
-                        controllerSifre.text.trim(),
-                        mevcutKategoriId,
-                      ]);
-                    },
-                    child: Text("Onayla"),
+
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("İptal"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, [
+                            controllerKayitAdi.text.trim(),
+                            controllerKullaniciAdi.text.trim(),
+                            controllerSifre.text.trim(),
+                            mevcutKategoriId,
+                          ]);
+                        },
+                        child: Text("Onayla"),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -341,8 +349,8 @@ class _KayitlarSayfasiState extends State<KayitlarSayfasi> {
       print("try girdi");
       kategoriId = kategoriId2;
       // print(kategoriId);
-      return filtrelenmisKayitListesi!
-          .firstWhere((Kayit value) => value.id == kategoriId)
+      return _kategoriler
+          .firstWhere((Kategori value) => value.id == kategoriId)
           .kategoriAdi;
     } catch (e) {
       print("hata");
